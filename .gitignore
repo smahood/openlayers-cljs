@@ -12,3 +12,4 @@ pom.xml.asc
 .nrepl-port
 /openlayers-clojurescript/out
 /openlayers-compiled/node_modules
+/openlayers-clojurescript/quickstart/out

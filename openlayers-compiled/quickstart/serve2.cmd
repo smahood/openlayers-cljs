@@ -1,0 +1,1 @@
+..\node_modules\.bin\closure-util.cmd serve config2.json

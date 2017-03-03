@@ -1,0 +1,42 @@
+{
+  "lib": [
+    "../node_modules/openlayers/src/**/*.js",
+    "../node_modules/openlayers/build/ol.ext/**/*.js",
+    "src/**/*.js"
+  ],
+  "compile": {
+    "closure_entry_point": "app",
+    "externs": [
+      "../node_modules/openlayers/externs/bingmaps.js",
+      "../node_modules/openlayers/externs/cartodb.js",
+      "../node_modules/openlayers/externs/closure-compiler.js",
+      "../node_modules/openlayers/externs/esrijson.js",
+      "../node_modules/openlayers/externs/geojson.js",
+      "../node_modules/openlayers/externs/proj4js.js",
+      "../node_modules/openlayers/externs/tilejson.js",
+      "../node_modules/openlayers/externs/topojson.js"
+    ],
+    "define": [
+      "ol.ENABLE_WEBGL=false"
+    ],
+    "js": [
+      "../node_modules/openlayers/externs/olx.js",
+      "../node_modules/openlayers/externs/oli.js"
+    ],
+    "jscomp_error": [
+      "*"
+    ],
+    "jscomp_off": [
+      "unknownDefines",
+      "lintChecks",
+      "analyzerChecks"
+    ],
+    "extra_annotation_name": [
+      "api", "observable"
+    ],
+    "compilation_level": "ADVANCED",
+    "warning_level": "VERBOSE",
+    "output_wrapper": "(function(){%output%})();",
+    "use_types_for_optimization": true
+  }
+}

@@ -8,10 +8,12 @@
           [ol Map View]
           [ol.layer Tile]))
 
+(def current-highlight (atom nil))
+
 
 (def my-style (Style.
                #js {:fill   (Fill.
-                             #js {:color "rgba(255,255,255,0.6)"})
+                             #js {:color "rgba(255,0,0,0.6)"})
                     :stroke (Stroke.
                              #js {:color "#319FD3"
                                   :width 1})
@@ -22,6 +24,7 @@
                                   :stroke (Stroke.
                                            #js {:color "#fff"
                                                 :width 3})})}))
+
 
 (def my-vector-layer (ol.layer.Vector.
                       #js {:source (ol.source.Vector.
@@ -34,6 +37,7 @@
                                                         (:name feature)
                                                         ""))))})}))
 
+
 (def my-osm-tile (Tile.
                   #js {:source (ol.source.OSM.)}))
 
@@ -44,18 +48,43 @@
                   :view   (View. #js {:center #js [0 0]
                                       :zoom   1})}))
 
-(def highlightStyleCache #js {})
 
-(def featureOverlay (ol.layer.Vector.
-                     #js {:source (ol.source.Vector.)
-                          :map my-map}))
-
-
+(def feature-overlay (ol.layer.Vector.
+                      #js {:source (ol.source.Vector.)
+                           :map    my-map
+                           :style  my-style}))
 
 
+(defn display-feature-info [pixel]
+      (let [feature (.forEachFeatureAtPixel my-map pixel (fn [feat _]
+                                                             feat))
+            info (.getElementById js/document "info")]
+           (if feature
+            (set! (.-innerHTML info) (str (.getId feature) ": " (.get feature "name")))
+            (set! (.-innerHTML info) (str "")))))
 
 
+(defn select-feature [pixel]
+      (let [feature (.forEachFeatureAtPixel my-map pixel (fn [feat _]
+                                                             feat))]
+           (if (not (= feature @current-highlight))
+            (do
+             (if @current-highlight
+              (do
+               (.removeFeature (.getSource feature-overlay) @current-highlight)
+               (reset! current-highlight nil)))
+             (if feature
+              (do
+               (.addFeature (.getSource feature-overlay) feature)
+               (reset! current-highlight feature)))))))
 
-(js/console.log my-style)
-(js/console.log my-vector-layer)
-(js/console.log my-map)
+
+(.on my-map "pointermove" (fn [event]
+                              (if (not (.-dragging event))
+                               (display-feature-info
+                                (.getEventPixel my-map
+                                                (.-originalEvent event))))))
+
+
+(.on my-map "click" (fn [event]
+                        (select-feature (.-pixel event))))
